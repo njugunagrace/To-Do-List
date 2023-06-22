@@ -4,15 +4,13 @@ const addBtn = document.getElementById('addBtn');
 const deleteBtn = document.getElementById('deleteBtn');
 const userIdInput = document.getElementById('userIdInput');
 
-const getTodoById = async (userId) => {
-  try {
-    const response = await fetch(`https://dummyjson.com/todos/${userId}`);
-    const todo = await response.json();
-    return todo;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
+const getTodoById = (userId) => {
+  return fetch(`https://dummyjson.com/todos/${userId}`)
+    .then(response => response.json())
+    .catch(error => {
+      console.log(error);
+      return null;
+    });
 };
 
 const displayTodo = async (userId) => {
@@ -52,17 +50,18 @@ const displayTodo = async (userId) => {
   }
 };
 
-const deleteTodoById = async (userId) => {
-  try {
-    const response = await fetch(`https://dummyjson.com/todos/${userId}`, {
-      method: 'DELETE'
+const deleteTodoById = (userId) => {
+  return fetch(`https://dummyjson.com/todos/${userId}`, {
+    method: 'DELETE'
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to delete todo');
+      }
+    })
+    .catch((error) => {
+      console.log(error);
     });
-    if (!response.ok) {
-      throw new Error('Failed to delete todo');
-    }
-  } catch (error) {
-    console.log(error);
-  }
 };
 
 const deleteTasks = () => {
@@ -78,5 +77,4 @@ addBtn.addEventListener('click', () => {
     successMessage.textContent = 'Please enter a valid User ID.';
   }
 });
-
 deleteBtn.addEventListener('click', deleteTasks);
